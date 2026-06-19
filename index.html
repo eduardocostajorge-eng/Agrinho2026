@@ -3,63 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Exportação de Commodities</title>
+    <title>Agrinho 2026</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 20px; }
-        .calculadora { max-width: 450px; background: white; padding: 20px; border-radius: 8px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        .resultado { margin-top: 20px; padding: 15px; background: #e2e8f0; border-radius: 4px; font-size: 1.2em; font-weight: bold; text-align: center; }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e0e0e0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .calculadora {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+            width: 320px;
+        }
+        .visor {
+            width: 100%;
+            height: 50px;
+            background-color: #222;
+            color: #fff;
+            font-size: 24px;
+            text-align: right;
+            padding: 5px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .botoes {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        button {
+            padding: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            transition: 0.2s;
+        }
+        button:hover { background-color: #ddd; }
+        button.operador { background-color: #ff9500; color: white; }
+        button.operador:hover { background-color: #e08500; }
+        button.limpar { background-color: #ff3b30; color: white; }
+        button.limpar:hover { background-color: #d32f2f; }
     </style>
 </head>
 <body>
 
 <div class="calculadora">
-    <h2>Calculadora de Exportação</h2>
-    
-    <div class="input-group">
-        <label for="preco-bolsa">Preço Internacional (USD/Saca ou Tonelada)</label>
-        <input type="number" id="preco-bolsa" placeholder="Ex: 120.50" oninput="calcular()">
-    </div>
-    
-    <div class="input-group">
-        <label for="cambio">Taxa de Câmbio (USD para BRL)</label>
-        <input type="number" id="cambio" placeholder="Ex: 5.50" oninput="calcular()">
-    </div>
-
-    <div class="input-group">
-        <label for="volume">Volume (Toneladas)</label>
-        <input type="number" id="volume" placeholder="Ex: 100" oninput="calcular()">
-    </div>
-
-    <div class="input-group">
-        <label for="custos">Custos de Frete/Porto (em R$) </label>
-        <input type="number" id="custos" placeholder="Ex: 1500" oninput="calcular()">
-    </div>
-
-    <div class="resultado" id="visor">
-        Lucro Total: R$ 0.00
+    <input type="text" id="visor" class="visor" disabled>
+    <div class="botoes">
+        <button class="limpar" onclick="limparVisor()">C</button>
+        <button onclick="adicionarValor('/')" class="operador">/</button>
+        <button onclick="adicionarValor('*')" class="operador">*</button>
+        <button onclick="adicionarValor('-')" class="operador">-</button>
+        
+        <button onclick="adicionarValor('7')">7</button>
+        <button onclick="adicionarValor('8')">8</button>
+        <button onclick="adicionarValor('9')">9</button>
+        <button onclick="adicionarValor('+')" class="operador">+</button>
+        
+        <button onclick="adicionarValor('4')">4</button>
+        <button onclick="adicionarValor('5')">5</button>
+        <button onclick="adicionarValor('6')">6</button>
+        <button onclick="calcular()" class="operador" style="grid-row: span 2; height: 100%;">=</button>
+        
+        <button onclick="adicionarValor('1')">1</button>
+        <button onclick="adicionarValor('2')">2</button>
+        <button onclick="adicionarValor('3')">3</button>
+        
+        <button onclick="adicionarValor('0')" style="grid-column: span 2;">0</button>
+        <button onclick="adicionarValor('.')">.</button>
     </div>
 </div>
 
 <script>
+    const visor = document.getElementById('visor');
+
+    function adicionarValor(valor) {
+        visor.value += valor;
+    }
+
+    function limparVisor() {
+        visor.value = '';
+    }
+
     function calcular() {
-        const precoBolsa = parseFloat(document.getElementById('preco-bolsa').value) || 0;
-        const cambio = parseFloat(document.getElementById('cambio').value) || 0;
-        const volume = parseFloat(document.getElementById('volume').value) || 0;
-        const custos = parseFloat(document.getElementById('custos').value) || 0;
-
-        // Regra de negócio (ex: 1 Ton = 16.66 sacas de 60kg para soja)
-        const sacasPorTonelada = 16.6667;
-        const totalSacas = volume * sacasPorTonelada;
-
-        // Valor em Reais da mercadoria
-        const receitaBrutaUSD = (precoBolsa * totalSacas); // considerando preço por saca
-        const receitaBrutaBRL = receitaBrutaUSD * cambio;
-        const lucroFinal = receitaBrutaBRL - custos;
-
-        document.getElementById('visor').innerText = "Lucro Total: R$ " + lucroFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        try {
+            // O eval() calcula a expressão matemática dentro da string
+            visor.value = eval(visor.value);
+        } catch (erro) {
+            visor.value = 'Erro';
+        }
     }
 </script>
 
