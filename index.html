@@ -1,62 +1,67 @@
 <!DOCTYPE html>
-<html language=pt-BR>
-
+<html lang="pt-BR">
 <head>
-  <title>2026 agrinho</title>
-  <meta charset="UTF-8">
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Exportação de Commodities</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .calculadora { max-width: 450px; background: white; padding: 20px; border-radius: 8px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .resultado { margin-top: 20px; padding: 15px; background: #e2e8f0; border-radius: 4px; font-size: 1.2em; font-weight: bold; text-align: center; }
+    </style>
 </head>
-
 <body>
-  <markdown>Coloque seu estado aqui!</markdown>
- body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #e0e0e0;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        .calculadora {
-            background-color: #333;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
-            width: 320px;
-        }
-        .visor {
-            width: 100%;
-            height: 50px;
-            background-color: #222;
-            color: #fff;
-            font-size: 24px;
-            text-align: right;
-            padding: 5px;
-            box-sizing: border-box;
-            border: none;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-        .botoes {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-        button {
-            padding: 20px;
-            font-size: 18px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #f0f0f0;
-            transition: 0.2s;
-        }
 
+<div class="calculadora">
+    <h2>Calculadora de Exportação</h2>
+    
+    <div class="input-group">
+        <label for="preco-bolsa">Preço Internacional (USD/Saca ou Tonelada)</label>
+        <input type="number" id="preco-bolsa" placeholder="Ex: 120.50" oninput="calcular()">
+    </div>
+    
+    <div class="input-group">
+        <label for="cambio">Taxa de Câmbio (USD para BRL)</label>
+        <input type="number" id="cambio" placeholder="Ex: 5.50" oninput="calcular()">
+    </div>
 
+    <div class="input-group">
+        <label for="volume">Volume (Toneladas)</label>
+        <input type="number" id="volume" placeholder="Ex: 100" oninput="calcular()">
+    </div>
 
+    <div class="input-group">
+        <label for="custos">Custos de Frete/Porto (em R$) </label>
+        <input type="number" id="custos" placeholder="Ex: 1500" oninput="calcular()">
+    </div>
+
+    <div class="resultado" id="visor">
+        Lucro Total: R$ 0.00
+    </div>
+</div>
+
+<script>
+    function calcular() {
+        const precoBolsa = parseFloat(document.getElementById('preco-bolsa').value) || 0;
+        const cambio = parseFloat(document.getElementById('cambio').value) || 0;
+        const volume = parseFloat(document.getElementById('volume').value) || 0;
+        const custos = parseFloat(document.getElementById('custos').value) || 0;
+
+        // Regra de negócio (ex: 1 Ton = 16.66 sacas de 60kg para soja)
+        const sacasPorTonelada = 16.6667;
+        const totalSacas = volume * sacasPorTonelada;
+
+        // Valor em Reais da mercadoria
+        const receitaBrutaUSD = (precoBolsa * totalSacas); // considerando preço por saca
+        const receitaBrutaBRL = receitaBrutaUSD * cambio;
+        const lucroFinal = receitaBrutaBRL - custos;
+
+        document.getElementById('visor').innerText = "Lucro Total: R$ " + lucroFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+</script>
 
 </body>
-
 </html>
